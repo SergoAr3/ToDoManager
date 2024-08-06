@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Body, Query
 from loguru import logger
 from starlette import status
 
-import app.api.errors as err
 from app.auth.utils import get_current_active_auth_user
 from app.db import User
 from app.schemas.task import TaskCreate, TaskRead, TaskUpdate
@@ -34,7 +33,8 @@ async def get_all_tasks(
         raise http_e
     except Exception as e:
         logger.error(e)
-        raise err.HTTP_500_INTERNAL_ERROR
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                        detail="Internal Server Error")
 
 
 @tasks_router.get(
@@ -65,7 +65,8 @@ async def get_task(
         raise http_e
     except Exception as e:
         logger.error(e)
-        raise err.HTTP_500_INTERNAL_ERROR
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                        detail="Internal Server Error")
 
 
 @tasks_router.post(
@@ -90,7 +91,8 @@ async def create_task(
         await task_service.create_task(task, current_user.id)
     except Exception as e:
         logger.error(e)
-        raise err.HTTP_500_INTERNAL_ERROR
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                        detail="Internal Server Error")
 
 
 @tasks_router.patch(
@@ -123,7 +125,8 @@ async def update_task(
         raise http_e
     except Exception as e:
         logger.error(e)
-        raise err.HTTP_500_INTERNAL_ERROR
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                        detail="Internal Server Error")
 
 
 @tasks_router.delete(
@@ -152,7 +155,8 @@ async def delete_task(
         raise http_e
     except Exception as e:
         logger.error(e)
-        raise err.HTTP_500_INTERNAL_ERROR
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                        detail="Internal Server Error")
 
 
 @tasks_router.post(
@@ -186,7 +190,8 @@ async def assign_access(
         raise http_e
     except Exception as e:
         logger.error(e)
-        raise err.HTTP_500_INTERNAL_ERROR
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                        detail="Internal Server Error")
 
 
 @tasks_router.delete(
@@ -219,4 +224,5 @@ async def revoke_access(
         raise http_e
     except Exception as e:
         logger.error(e)
-        raise err.HTTP_500_INTERNAL_ERROR
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                        detail="Internal Server Error")

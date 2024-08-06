@@ -1,14 +1,12 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 
-import app.api.errors as err
 from app.auth.utils import encode_jwt, validate_auth_user
 from app.schemas.token import Token
 from app.schemas.user import UserCreate
 from app.services.auth import AuthService
-
 
 auth_router = APIRouter()
 
@@ -20,7 +18,8 @@ async def register(
 ):
     reg_user = await auth_service.create_user(user)
     if reg_user is not None:
-        raise err.HTTP_409_CONFLICT_USER_EXISTS
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                            detail='User with this username already exists!')
 
 
 @auth_router.post('/login', response_model=Token)

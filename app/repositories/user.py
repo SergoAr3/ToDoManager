@@ -10,19 +10,16 @@ class UserRepository:
     def __init__(self, db: AsyncSession = Depends(get_db)):
         self.db = db
 
-    async def get(self, username: str):
-        user = await self.db.execute(select(User).where(User.username == username))
-        user = user.scalar()
-        return user
+    async def get(self, username: str = None, user_id: int = None, get_username=False) -> User:
+        if username:
+            user = await self.db.scalar(select(User).filter_by(username=username))
+            return user
 
-    async def get_by_id(self, user_id: int):
-        user = await self.db.execute(select(User).where(User.id == user_id))
-        user = user.scalar()
-        return user
+        if get_username:
+            user = await self.db.scalar(select(User.username).filter_by(id=user_id))
+            return user
 
-    async def get_username(self, user_id: int = None):
-        user = await self.db.execute(select(User.username).where(User.id == user_id))
-        user = user.scalar()
+        user = await self.db.scalar(select(User.username).filter_by(id=user_id))
         return user
 
     async def create(self, user: User):

@@ -11,24 +11,24 @@ class TaskRepository:
         self.db = db
 
     async def get(self, task_id: int):
-        stmt = select(Task).where(Task.id == task_id)
-        res = await self.db.execute(stmt)
-        task = res.scalar()
+        stmt = select(Task).filter_by(id=task_id)
+        task = await self.db.scalar(stmt)
         return task
 
     async def get_all(self, user_id: int):
-        stmt = select(Task).where(Task.owner_id == user_id)
-        res = await self.db.execute(stmt)
-        tasks = res.scalars().all()
+        stmt = select(Task).filter_by(owner_id=user_id)
+        tasks = await self.db.scalars(stmt)
         return tasks
 
     async def create(self, task: Task):
         self.db.add(task)
 
     async def update(self, task_update_data: dict, task_id: int):
-        stmt = (update(Task)
-                .where(Task.id == task_id)
-                .values(task_update_data))
+        stmt = (
+            update(Task)
+            .filter_by(id=task_id)
+            .values(task_update_data)
+        )
 
         await self.db.execute(stmt)
 
